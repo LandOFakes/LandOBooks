@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}My Books - Book Catalogue{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center">Add New Book by ISBN</h2>
+            <form method="POST" action="{{ url_for('add_book') }}" class="input-group">
+                <input type="text" class="form-control" name="isbn" placeholder="Enter ISBN (e.g., 9781449372620)" required>
+                <button type="submit" class="btn btn-success">Add Book</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <h2 class="mt-4 mb-3">My Book Collection</h2>
+    {% if books %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for book in books %}
+                {% include '_book_item.html' %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Your book catalogue is empty. Add some books using the form above!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
