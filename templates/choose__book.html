@@ -1,0 +1,31 @@
+<div class="col">
+    <div class="card h-100 shadow-sm">
+        {% set info = book.volumeInfo %}
+        {% if info.imageLinks and info.imageLinks.thumbnail %}
+            <img src="{{ info.imageLinks.thumbnail }}" class="card-img-top book-thumbnail mx-auto mt-3" alt="Cover for {{ info.title }}">
+        {% else %}
+            <div class="card-img-top book-thumbnail-placeholder d-flex align-items-center justify-content-center bg-light mx-auto mt-3">
+                <small class="text-muted">No Image</small>
+            </div>
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ info.title }}</h5>
+            <p class="card-text authors-text">
+                <small class="text-muted"><strong>Authors:</strong> {{ info.authors | join(', ') if info.authors else 'N/A' }}</small>
+            </p>
+            <ul class="list-unstyled mt-auto mb-2">
+                <li><small><strong>Pages:</strong> {{ info.pageCount if info.pageCount is not none else 'N/A' }}</small></li>
+                <li><small><strong>Rating:</strong> {{ info.averageRating if info.averageRating is not none else 'N/A' }}</small></li>
+            </ul>
+            <form method="POST" action="{{ url_for('add_book_from_selection') }}">
+                <input type="hidden" name="title" value="{{ info.title }}">
+                <input type="hidden" name="authors" value="{{ info.authors | join(', ') if info.authors else '' }}">
+                <input type="hidden" name="isbn" value="{{ info.industryIdentifiers[0].identifier if info.industryIdentifiers else '' }}">
+                <input type="hidden" name="page_count" value="{{ info.pageCount }}">
+                <input type="hidden" name="average_rating" value="{{ info.averageRating }}">
+                <input type="hidden" name="thumbnail_url" value="{{ info.imageLinks.thumbnail if info.imageLinks and info.imageLinks.thumbnail else '' }}">
+                <button type="submit" class="btn btn-sm btn-success w-100">Add This Book</button>
+            </form>
+        </div>
+    </div>
+</div>
