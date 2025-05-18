@@ -5,7 +5,7 @@ from models import db, User, Book
 
 # App Configuration
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_very_secret_key_here'
+app.config['SECRET_KEY'] = 'your_very_secret_key_here'  # Replace with a secure key in production
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'login'  # Redirect here if login required
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -49,11 +49,20 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
-@app.route('/search', methods=['POST'])
+# Updated to accept GET and POST for easier redirect
+@app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
-    query = request.form['query']
-    search_type = request.form['search_type']
+    if request.method == 'POST':
+        query = request.form['query']
+        search_type = request.form['search_type']
+    else:  # GET method, possibly redirected from /add_book
+        query = request.args.get('query')
+        search_type = request.args.get('search_type', 'isbn')
+
+    if not query:
+        flash("Please enter a search query.", "warning")
+        return redirect(url_for('index'))
 
     if search_type == 'isbn':
         url = f'https://www.googleapis.com/books/v1/volumes?q=isbn:{query}'
@@ -92,6 +101,7 @@ def add_book_from_selection():
     flash("Book added successfully!")
     return redirect(url_for('index'))
 
+# Updated to redirect with query parameters so /search can handle it properly
 @app.route('/add_book', methods=['POST'])
 @login_required
 def add_book():
@@ -105,13 +115,15 @@ def add_book():
         flash(f'Book with ISBN {isbn} already in your catalogue.', 'info')
         return redirect(url_for('index'))
 
-    return redirect(url_for('search'))
+    # Redirect to /search with query parameters (GET request)
+    return redirect(url_for('search', query=isbn, search_type='isbn'))
 
 @app.route('/delete_book/<int:book_id>', methods=['POST'])
 @login_required
 def delete_book(book_id):
     book_to_delete = Book.query.get_or_404(book_id)
-    if book_to_delete.owner != current_user:
+    # Make sure your Book model uses "user" relationship, or adjust accordingly
+    if book_to_delete.user != current_user:
         flash('You do not have permission to delete this book.', 'danger')
         return redirect(url_for('index')), 403
 
@@ -135,4 +147,5 @@ if __name__ == '__main__':
             db.session.add(default_user)
             db.session.commit()
     app.run(debug=True)
+
 
