@@ -145,6 +145,22 @@ def delete_book(book_id):
         flash(f'Error deleting book: {str(e)}', 'danger')
         
     return redirect(url_for('index'))
+@app.route('/add_book_from_selection', methods=['POST'])
+@login_required
+def add_book_from_selection():
+    book = Book(
+        title=request.form['title'],
+        authors=request.form['authors'],
+        isbn=request.form['isbn'],
+        page_count=request.form.get('page_count'),
+        average_rating=request.form.get('average_rating'),
+        thumbnail_url=request.form['thumbnail_url'],
+        user_id=current_user.id
+    )
+    db.session.add(book)
+    db.session.commit()
+    flash("Book added successfully!")
+    return redirect(url_for('dashboard'))
 
 # Command to create DB and a demo user
 # You'll run these commands in the Flask shell:
