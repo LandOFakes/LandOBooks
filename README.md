@@ -1,3 +1,21 @@
-Hello,  this is a placeholder, it shall be updated later in the project upon completion, post pre-submission functionality testing. 
-If this text remains within the read.me file, the project is not complete and likely has not passed testing. 
-If this file is somehow still blank, I may have forgotten to circle back to the file to put information within the file.
+LandOBooks
+
+LandOBooks is a Flask web application that allows users to manage their personal book collections. Users can register, log in, and add books with details such as ISBN, title, authors, page count, ratings, and thumbnails.
+
+Features
+
+User registration and login with secure password hashing.
+Personal book collection management linked to each user.
+Add books manually or via API integration.
+User sessions managed with Flask-Login.
+Forms handled securely using Flask-WTF.
+SQLite database powered by SQLAlchemy ORM.
+Technologies Used
+
+Python 
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-WTF
+SQLite
+Werkzeug (for password hashing)
