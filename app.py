@@ -23,6 +23,11 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Context processor to inject site name into all templates
+@app.context_processor
+def inject_site_name():
+    return dict(site_name="LandOBooks")
+
 # Forms
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3)])
