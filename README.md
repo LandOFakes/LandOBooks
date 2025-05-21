@@ -19,3 +19,6 @@ Flask-Login
 Flask-WTF
 SQLite
 Werkzeug (for password hashing)
+Be sure to update and download any of these requirements for full function.
+
+Thank you for an insightful semester and for pushing my abilities beyond basic knowledge Professor!
